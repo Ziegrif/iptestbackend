@@ -1,27 +1,16 @@
+require('dotenv').config()
 const http = require('http')
 const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
+const Note = require('./models/note')
 const app = express()
+
 
 app.use(cors())
 app.use(express.static('build'))
 app.use(express.json())
 
-const password = process.argv[2]
-
-const url =
-  `mongodb+srv://admin:${password}@cluster0.chqauzf.mongodb.net/noteApp?retryWrites=true&w=majority`
-
-mongoose.set('strictQuery', false)
-mongoose.connect(url)
-
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
-})
-
-const Note = mongoose.model('Note', noteSchema)
 
 let notes = [
   {
@@ -40,6 +29,7 @@ let notes = [
     important: true
   }
 ]
+
 
 const generateId = () => {
   const maxId = notes.length > 0
@@ -79,7 +69,7 @@ app.get('/api/notes', (request, response) => {
   })
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
